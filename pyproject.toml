@@ -2,7 +2,7 @@
 authors = ["widal001 <williamdaly422@gmail.com>"]
 description = "Source code for the Cofundable API"
 license = "MIT License"
-name = "cofundable-api"
+name = "api"
 version = "0.1.0"
 
 [tool.poetry.dependencies]
