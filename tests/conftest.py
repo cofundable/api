@@ -1,3 +1,5 @@
+"""Configure shared fixtures and pytest settings."""
+
 import pytest
 from fastapi.testclient import TestClient
 

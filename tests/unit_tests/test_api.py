@@ -1,3 +1,5 @@
+"""Test the endpoints defined in api.py."""
+
 from fastapi.testclient import TestClient
 
 

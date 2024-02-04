@@ -1,10 +1,12 @@
+"""Instantiate the Cofundable API and root-level endpoints."""
+
 from fastapi import FastAPI
 
 app = FastAPI()
 
 
 @app.get("/")
-async def root():
+async def root() -> dict:
     """Welcome user to the API and direct to openAPI spec."""
     return {
         "status": "ok",
@@ -16,6 +18,6 @@ async def root():
 
 
 @app.get("/health-check")
-async def health_check():
+async def health_check() -> dict:
     """Check that the API is available."""
     return {"status": "ok"}
