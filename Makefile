@@ -29,3 +29,8 @@ test-audit: unit-test
 	@echo "=> Running test coverage report"
 	@echo "============================="
 	$(POETRY) run coverage report --show-missing --fail-under=$(MIN_TEST_COVERAGE)
+
+local-server:
+	@echo "=> Starting local API server"
+	@echo "============================="
+	$(POETRY) run uvicorn cofundable.api:app --reload
