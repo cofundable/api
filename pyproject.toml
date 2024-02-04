@@ -2,12 +2,13 @@
 authors = ["widal001 <williamdaly422@gmail.com>"]
 description = "Source code for the Cofundable API"
 license = "MIT License"
-name = "api"
+name = "cofundable"
 version = "0.1.0"
 
 [tool.poetry.dependencies]
-python = ">=3.9,<4.0"
 fastapi = "^0.109.1"
+python = ">=3.9,<4.0"
+uvicorn = {extras = ["standard"], version = "^0.27.0.post1"}
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.1.1"
