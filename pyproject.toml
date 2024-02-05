@@ -6,12 +6,12 @@ name = "cofundable"
 version = "0.1.0"
 
 [tool.poetry.dependencies]
+alembic = "^1.13.1"
 fastapi = "^0.109.1"
 httpx = "^0.26.0"
 python = ">=3.9,<4.0"
-uvicorn = {extras = ["standard"], version = "^0.27.0.post1"}
 sqlalchemy = "^2.0.25"
-alembic = "^1.13.1"
+uvicorn = {extras = ["standard"], version = "^0.27.0.post1"}
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.1.1"
@@ -89,6 +89,9 @@ disable = [
   "R0903", # Disables too few public methods
 ]
 
+[tool.ruff]
+line-length = 100
+
 [tool.ruff.lint]
 extend-safe-fixes = [
   "D400", # docstrings should end with a period
@@ -99,5 +102,6 @@ ignore = [
   "ANN102", # missing type annotation for cls
   "D203", # no blank line before class
   "D212", # multi-line summary first line
+  "FA", # flake8-future-annotations ruleset
 ]
 select = ["ALL"]

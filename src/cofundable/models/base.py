@@ -5,7 +5,7 @@ from uuid import UUID
 
 from sqlalchemy import DateTime
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
-from sqlalchemy.sql import func
+from sqlalchemy.sql import functions
 
 
 class UUIDAuditBase(DeclarativeBase):
@@ -14,10 +14,10 @@ class UUIDAuditBase(DeclarativeBase):
     id: Mapped[UUID] = mapped_column(primary_key=True)
     created_at = mapped_column(
         DateTime(timezone=True),
-        default=func.now(),
+        default=functions.now,
     )
     updated_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
-        default=func.now(),
-        onupdate=func.now(),
+        default=functions.now,
+        onupdate=functions.now,
     )
