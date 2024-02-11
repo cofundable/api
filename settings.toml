@@ -1,0 +1,5 @@
+[testing]
+database_url = "sqlite:///mock.db"
+
+[development]
+database_url = "sqlite:///cofundable.db"
