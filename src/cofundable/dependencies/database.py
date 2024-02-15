@@ -7,7 +7,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import Session, sessionmaker
 
 from cofundable import config
-from cofundable.models.base import Base
+from cofundable.models.base import UUIDAuditBase
 
 
 def create_session_factory() -> sessionmaker:
@@ -59,5 +59,6 @@ def init_test_db(db: Session, *, testing: bool = False) -> None:
 
     """
     if testing:
-        Base.metadata.drop_all(bind=db.get_bind())  # drop all existing tables
-        Base.metadata.create_all(bind=db.get_bind())  # recreate all tables
+        # drop and recreate all tables
+        UUIDAuditBase.metadata.drop_all(bind=db.get_bind())
+        UUIDAuditBase.metadata.create_all(bind=db.get_bind())
