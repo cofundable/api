@@ -11,11 +11,13 @@ CAUSES = {
     ACME: {
         "id": ACME,
         "name": "Acme",
+        "handle": "acme",
         "description": "Local organization",
     },
     MUTUAL_AID: {
         "id": MUTUAL_AID,
         "name": "Mutual aid group",
+        "handle": "mutual-aid",
         "description": "Local organization",
     },
 }

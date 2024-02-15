@@ -13,9 +13,10 @@ class Cause(UUIDAuditBase):
     """Store information related to a cause."""
 
     name: Mapped[str]
+    handle: Mapped[str]
     description: Mapped[Optional[str]]
 
-    tags: Mapped[list[Tag]] = relationship(
+    tags: Mapped[set[Tag]] = relationship(
         secondary=cause_tag_table,
         back_populates="causes",
     )
