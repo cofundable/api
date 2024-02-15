@@ -11,6 +11,8 @@ from cofundable import config
 from cofundable.api import app
 from cofundable.dependencies import database
 
+from tests.utils.populate_db import populate_db
+
 
 @pytest.fixture(scope="session", name="test_config")
 def fixture_config():
@@ -44,4 +46,5 @@ def fixture_session(test_config: Dynaconf):
     # yield that session after dropping and recreating the tables in the db
     with TestSession() as session:
         database.init_test_db(session, testing=True)
+        populate_db(session)
         yield session
