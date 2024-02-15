@@ -24,9 +24,12 @@ def populate_db(session: Session) -> None:
     # associate tags with causes
     for cause_id, tag_ids in data.CAUSE_TAGS.items():
         cause = causes.get(cause_id)
+        if not cause:
+            continue
         for tag_id in tag_ids:
             tag = tags.get(tag_id)
-            cause.tags.append(tag)
+            if tag:
+                cause.tags.add(tag)
 
     # add records to session and then commit
     session.add_all(tags.values())

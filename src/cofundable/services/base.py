@@ -96,7 +96,7 @@ class CRUDBase(Generic[ModelTypeT, CreateSchemaTypeT, UpdateSchemaTypeT]):
 
         """
         data = jsonable_encoder(data)  # makes data JSON-compatible
-        record = self.model(id=uuid4(), **data.model_dump())
+        record = self.model(id=uuid4(), **data)
         return self.commit_changes(db, record)
 
     def update(
