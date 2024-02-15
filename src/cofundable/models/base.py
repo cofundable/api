@@ -27,7 +27,8 @@ class UUIDAuditBase(DeclarativeBase):
         onupdate=functions.now(),
     )
 
-    @declared_attr
-    def __tablename__(cls) -> str:  # noqa: N805
+    @declared_attr.directive
+    @classmethod
+    def __tablename__(cls) -> str:
         """Set default table name as the lowercase version of the class name."""
         return cls.__name__.lower()

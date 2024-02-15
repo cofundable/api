@@ -7,12 +7,12 @@ version = "0.1.0"
 
 [tool.poetry.dependencies]
 alembic = "^1.13.1"
+dynaconf = "^3.2.4"
 fastapi = "^0.109.1"
 httpx = "^0.26.0"
 python = ">=3.9,<4.0"
 sqlalchemy = "^2.0.25"
 uvicorn = {extras = ["standard"], version = "^0.27.0.post1"}
-dynaconf = "^3.2.4"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.1.1"
@@ -88,6 +88,12 @@ unauthorized_licenses = []
 disable = [
   "C0114", # Disables module docstrings
   "R0903", # Disables too few public methods
+]
+
+[[tool.mypy.overrides]]
+ignore_missing_imports = true
+module = [
+  "dynaconf.*",
 ]
 
 [tool.ruff]
