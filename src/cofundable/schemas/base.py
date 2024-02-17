@@ -5,6 +5,12 @@ from uuid import UUID
 
 from pydantic import BaseModel
 
+BASE_EXAMPLE = {
+    "id": "ad83342a-e81d-46d0-9009-36e89dc72d1c",
+    "created_at": "2022-04-23T18:25:43.511Z",
+    "updated_at": "2022-04-28T16:35:12.344Z",
+}
+
 
 class UUIDAuditResponseBase(BaseModel):
     """Base schema for response models that include a set of default fields."""

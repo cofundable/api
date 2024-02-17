@@ -2,7 +2,10 @@
 
 from fastapi import FastAPI
 
+from cofundable.routes.causes import cause_router
+
 app = FastAPI()
+app.include_router(cause_router)
 
 
 @app.get("/")
