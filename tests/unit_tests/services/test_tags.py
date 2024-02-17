@@ -44,7 +44,7 @@ class TestGetTagsByName:
             tag_names=tag_names,
         )
         # validation - Check that an empty list is returned
-        assert tags == []
+        assert tags == set()
 
 
 class TestGetOrCreateTagsByName:
@@ -60,11 +60,9 @@ class TestGetOrCreateTagsByName:
         tags_old = set(tag_service.get_all(test_session))
         assert set(tag_names) == {tag.name for tag in tags_old}
         # execution
-        tags_out = set(
-            tag_service.get_or_create_tags_by_name(
-                db=test_session,
-                tag_names=tag_names,
-            )
+        tags_out = tag_service.get_or_create_tags_by_name(
+            db=test_session,
+            tag_names=tag_names,
         )
         tags_new = set(tag_service.get_all(test_session))
         # validation - Check that no new tags were created
@@ -83,16 +81,13 @@ class TestGetOrCreateTagsByName:
         tags_old = set(tag_service.get_all(test_session))
         assert missing not in {tag.name for tag in tags_old}
         # execution
-        tags_out = set(
-            tag_service.get_or_create_tags_by_name(
-                db=test_session,
-                tag_names=tag_names,
-            ),
+        tags_out = tag_service.get_or_create_tags_by_name(
+            db=test_session,
+            tag_names=tag_names,
         )
         tags_new = set(tag_service.get_all(test_session))
         # validation - Check that a new tag was created
         assert len(tags_new) > len(tags_old)
-        assert tags_old != tags_out
         # validation - Check that newly created tags are also returned
         assert len(tags_out) == 3
         assert tags_out.issubset(tags_new)

@@ -16,16 +16,16 @@ class TagsCRUD(CRUDBase[Tag, TagSchema, TagSchema]):
         db: Session,
         *,
         tag_names: list[str],
-    ) -> list[Tag]:
+    ) -> set[Tag]:
         """Find a list of tag entries by name, or create them if they don't exist."""
         # find existing tags records by name
         tags = self.get_tags_by_name(db, tag_names=tag_names)
-        existing_tags = [tag.name for tag in tags]
+        existing_tags = {tag.name for tag in tags}
         # create new tag records if they don't exist
         for tag_name in tag_names:
             if tag_name not in existing_tags:
                 tag_data = TagSchema(name=tag_name)
-                tags.append(self.create(db=db, data=tag_data))
+                tags.add(self.create(db=db, data=tag_data))
         # return existing and newly created tags
         return tags
 
@@ -34,10 +34,10 @@ class TagsCRUD(CRUDBase[Tag, TagSchema, TagSchema]):
         db: Session,
         *,
         tag_names: list[str],
-    ) -> list[Tag]:
+    ) -> set[Tag]:
         """Find a list of tag entries by name."""
         stmt = select(Tag).where(Tag.name.in_(tag_names))
-        return list(db.execute(stmt).scalars().all())
+        return set(db.execute(stmt).scalars().all())
 
 
 tag_service = TagsCRUD(model=Tag)
