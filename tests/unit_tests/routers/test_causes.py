@@ -1,9 +1,13 @@
 """Test the causes_router in cofundable/routers/causes.py."""
 
+from uuid import UUID, uuid4
+
 from fastapi.testclient import TestClient
 
+from tests.utils import test_data
 
-class TestGetCauses:
+
+class TestListCauses:
     """Test the GET /causes/ endpoint."""
 
     ENDPOINT = "/causes/"
@@ -39,3 +43,34 @@ class TestGetCauses:
         assert len(response_body["items"]) == 1
         assert response_body["links"]["next"] is not None
         assert response_body["links"]["prev"] is None
+
+
+class TestGetCauseById:
+    """Test the GET /causes/<cause_id> endpoint."""
+
+    def endpoint(self, cause_id: UUID) -> str:
+        """Make the endpoint path to test."""
+        return f"/causes/{cause_id}"
+
+    def test_return_correct_cause(self, test_client: TestClient):
+        """The correct cause should be returned."""
+        # setup
+        acme_id = test_data.ACME
+        endpoint = self.endpoint(acme_id)
+        acme_data = test_data.CAUSES[acme_id]
+        # execution
+        response = test_client.get(endpoint)
+        # validation
+        assert response.status_code == 200
+        assert response.json()["id"] == str(acme_id)
+        assert response.json()["name"] == acme_data["name"]
+
+    def test_return_404_if_id_has_no_match(self, test_client: TestClient):
+        """Return 404 if id provided doesn't have a database match."""
+        # setup - use an id that doesn't match an existing record
+        endpoint = self.endpoint(uuid4())
+        # execution
+        response = test_client.get(endpoint)
+        # validation - response code should be 404
+        assert response.status_code == 404
+        assert response.json() == {"detail": "Cause not found"}

@@ -10,13 +10,13 @@ from cofundable import config
 from cofundable.models.base import UUIDAuditBase
 
 
-def create_session_factory() -> sessionmaker:
+def create_session_factory() -> sessionmaker:  # pragma: no cover
     """Create a sessionmaker with database connection details."""
     engine = create_engine(config.settings.DATABASE_URL, pool_pre_ping=True)
     return sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-def get_db() -> Generator[Session, None, None]:
+def get_db() -> Generator[Session, None, None]:  # pragma: no cover
     """
     Yield a connection to the database to manage transactions.
 
