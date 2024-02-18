@@ -5,9 +5,10 @@ Causes represent organizations, initiatives, and projects that need funding
 and resources.
 """
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 
 from cofundable.schemas.base import BASE_EXAMPLE, UUIDAuditResponseBase
+from cofundable.schemas.tag import TagSchema
 
 CAUSE_EXAMPLE = {
     "name": "Waverly Mutual Aid",
@@ -26,17 +27,27 @@ class CauseBase(BaseModel):
     name: str
     description: str
     handle: str
-    tags: list[str] = Field(default=[])
 
 
 class CauseRequestSchema(CauseBase):
     """Request schema for a cause that excludes read only fields."""
+
+    tags: list[str] = Field(default=[])
 
     model_config = {"json_schema_extra": {"examples": [{**CAUSE_EXAMPLE}]}}
 
 
 class CauseResponseSchema(CauseBase, UUIDAuditResponseBase):
     """Response schema for a cause that includes id, created_at, and updated_at."""
+
+    tags: list[TagSchema] = Field(serialization_alias="tags")
+
+    @computed_field
+    def tag_names(self) -> list[str]:
+        """Pluck the names of the tags associated with this cause."""
+        if self.tags:
+            return [tag.name for tag in self.tags]
+        return []
 
     model_config = {
         "json_schema_extra": {"examples": [{**BASE_EXAMPLE, **CAUSE_EXAMPLE}]},

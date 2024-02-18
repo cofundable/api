@@ -3,6 +3,8 @@
 from typing import Annotated, Sequence
 
 from fastapi import APIRouter, Depends
+from fastapi_pagination.ext.sqlalchemy import paginate
+from fastapi_pagination.links import Page
 
 from cofundable.dependencies.database import Session, get_db
 from cofundable.schemas.cause import CauseRequestSchema, CauseResponseSchema
@@ -18,11 +20,11 @@ cause_router = APIRouter(
 @cause_router.get(
     "/",
     summary="Search causes",
-    response_model=list[CauseResponseSchema],
+    response_model=Page[CauseResponseSchema],
 )
-def search_causes(db: Annotated[Session, Depends(get_db)]) -> Sequence[Cause]:
+def get_causes(db: Annotated[Session, Depends(get_db)]) -> Sequence[Cause]:
     """Get a list of causes."""
-    return cause_service.get_all(db=db)
+    return paginate(conn=db, query=cause_service.get_all_paginated())
 
 
 @cause_router.post(

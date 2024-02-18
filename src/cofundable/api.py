@@ -1,11 +1,13 @@
 """Instantiate the Cofundable API and root-level endpoints."""
 
 from fastapi import FastAPI
+from fastapi_pagination import add_pagination
 
 from cofundable.routes.causes import cause_router
 
 app = FastAPI()
 app.include_router(cause_router)
+add_pagination(app)
 
 
 @app.get("/")

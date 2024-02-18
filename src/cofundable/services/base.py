@@ -63,10 +63,6 @@ class CRUDBase(Generic[ModelTypeT, CreateSchemaTypeT, UpdateSchemaTypeT]):
         ----------
         db: Session
             Instance of SQLAlchemy session that manages database transactions
-        skip: int, optional
-            The number of rows to skip in the table before returning a row
-        limit: int, optional
-            The maximum number of rows to return in the query result
 
         Returns
         -------
@@ -76,6 +72,10 @@ class CRUDBase(Generic[ModelTypeT, CreateSchemaTypeT, UpdateSchemaTypeT]):
         """
         stmt = sa.select(self.model)
         return db.execute(stmt).scalars().all()
+
+    def get_all_paginated(self) -> sa.Select:
+        """Return a query all records that can be paginated."""
+        return sa.select(self.model)
 
     def create(
         self,

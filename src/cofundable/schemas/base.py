@@ -3,7 +3,7 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 BASE_EXAMPLE = {
     "id": "ad83342a-e81d-46d0-9009-36e89dc72d1c",
@@ -18,3 +18,5 @@ class UUIDAuditResponseBase(BaseModel):
     id: UUID
     created_at: datetime
     updated_at: datetime
+
+    model_config = ConfigDict(from_attributes=True)
