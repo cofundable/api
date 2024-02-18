@@ -28,7 +28,6 @@ class UUIDAuditBase(DeclarativeBase):
     )
 
     @declared_attr.directive
-    @classmethod
-    def __tablename__(cls) -> str:
+    def __tablename__(cls) -> str:  # noqa: N805
         """Set default table name as the lowercase version of the class name."""
         return cls.__name__.lower()

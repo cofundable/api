@@ -10,7 +10,7 @@ from pydantic import BaseModel, Field, computed_field
 from cofundable.schemas.base import BASE_EXAMPLE, UUIDAuditResponseBase
 from cofundable.schemas.tag import TagSchema
 
-CAUSE_EXAMPLE = {
+CAUSE_EXAMPLE: dict[str, str | list] = {
     "name": "Waverly Mutual Aid",
     "description": "A mutual aid group for the Waverly community in Baltimore",
     "handle": "waverly-mutual-aid",
@@ -40,13 +40,13 @@ class CauseRequestSchema(CauseBase):
 class CauseResponseSchema(CauseBase, UUIDAuditResponseBase):
     """Response schema for a cause that includes id, created_at, and updated_at."""
 
-    tags: list[TagSchema] = Field(serialization_alias="tags")
+    tags: list[TagSchema] = Field(serialization_alias="tags", default=[])
 
     @computed_field
     def tag_names(self) -> list[str]:
         """Pluck the names of the tags associated with this cause."""
         if self.tags:
-            return [tag.name for tag in self.tags]
+            return [tag.name for tag in self.tags]  # pylint: disable=E1133
         return []
 
     model_config = {

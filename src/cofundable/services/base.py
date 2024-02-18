@@ -95,8 +95,8 @@ class CRUDBase(Generic[ModelTypeT, CreateSchemaTypeT, UpdateSchemaTypeT]):
             insert a new row in the database
 
         """
-        data = jsonable_encoder(data)  # makes data JSON-compatible
-        record = self.model(id=uuid4(), **data)
+        model_data: dict = jsonable_encoder(data)  # makes data JSON-compatible
+        record = self.model(id=uuid4(), **model_data)
         return self.commit_changes(db, record)
 
     def update(
