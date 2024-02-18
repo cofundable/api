@@ -1,4 +1,4 @@
-"""Routes API requests related to Cofundable causes."""
+"""Route API requests related to Cofundable causes."""
 
 from typing import Annotated, Sequence
 from uuid import UUID
@@ -32,6 +32,7 @@ def list_causes(db: Annotated[Session, Depends(get_db)]) -> Sequence[Cause]:
     "/",
     summary="Create a cause",
     response_model=CauseResponseSchema,
+    status_code=201,
 )
 def post_cause(
     db: Annotated[Session, Depends(get_db)],

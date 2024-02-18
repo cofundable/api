@@ -25,8 +25,8 @@ class CauseBase(BaseModel):
     """Base schema for a cause, with fields shared by POST, PUT, and GET."""
 
     name: str
-    description: str
     handle: str
+    description: str | None = None
 
 
 class CauseRequestSchema(CauseBase):
@@ -40,7 +40,7 @@ class CauseRequestSchema(CauseBase):
 class CauseResponseSchema(CauseBase, UUIDAuditResponseBase):
     """Response schema for a cause that includes id, created_at, and updated_at."""
 
-    tags: list[TagSchema] = Field(serialization_alias="tags", default=[])
+    tags: list[TagSchema] = Field(default=[])
 
     @computed_field
     def tag_names(self) -> list[str]:
