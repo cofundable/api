@@ -16,7 +16,7 @@ def create_session_factory() -> sessionmaker:
     return sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
-def get_db() -> Generator:
+def get_db() -> Generator[Session, None, None]:
     """
     Yield a connection to the database to manage transactions.
 

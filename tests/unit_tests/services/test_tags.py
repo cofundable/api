@@ -1,4 +1,4 @@
-"""Test the code in cofundable.services.tags."""
+"""Test the cofundable.services.tags module."""
 
 from sqlalchemy.orm import Session
 

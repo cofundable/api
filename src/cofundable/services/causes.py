@@ -1,6 +1,5 @@
 """Handle business logic related to Cofundable causes."""
 
-from datetime import datetime, timezone
 from uuid import uuid4
 
 from fastapi.encoders import jsonable_encoder
@@ -36,32 +35,6 @@ class CauseCRUD(CRUDBase[Cause, CauseRequestSchema, CauseResponseSchema]):
         cause.tags.update(tags)
         # commit the new record to the db and return it
         return self.commit_changes(db, cause)
-
-
-def create_cause(data: CauseRequestSchema) -> CauseResponseSchema:
-    """Create a new cause and return the resulting record."""
-    now = datetime.now(timezone.utc)
-    return CauseResponseSchema(
-        **data.model_dump(),
-        id=uuid4(),
-        updated_at=now,
-        created_at=now,
-    )
-
-
-def list_causes() -> list[CauseResponseSchema]:
-    """Return a list of causes, optionally filtered by a set of fields."""
-    now = datetime.now(timezone.utc)
-    return [
-        CauseResponseSchema(
-            id=uuid4(),
-            created_at=now,
-            updated_at=now,
-            name="Acme",
-            description="Test description",
-            handle="acme",
-        ),
-    ]
 
 
 cause_service = CauseCRUD(model=Cause)

@@ -1,1 +1,1 @@
-"""Run unit tests for cofundable.services."""
+"""Manage unit tests for the cofundable.services package."""
