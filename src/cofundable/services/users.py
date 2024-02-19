@@ -11,16 +11,16 @@ from cofundable.services.base import CRUDBase
 class UserCRUD(CRUDBase[User, UserRequestSchema, UserResponseSchema]):
     """Manage CRUD operations for the Cause model."""
 
-    def get_user_by_username(self, db: Session, username: str) -> User | None:
+    def get_user_by_handle(self, db: Session, handle: str) -> User | None:
         """
-        Find a user by their username, if the username exists in the system.
+        Find a user by their handle, if the handle exists in the system.
 
         Parameters
         ----------
         db: Session
             Instance of SQLAlchemy session that manages database transactions
-        username: str
-            The username for the user to return
+        handle: str
+            The handle for the user to return
 
         Returns
         -------
@@ -29,7 +29,7 @@ class UserCRUD(CRUDBase[User, UserRequestSchema, UserResponseSchema]):
             or returns None if no match is found
 
         """
-        stmt = select(User).where(User.username == username)
+        stmt = select(User).where(User.handle == handle)
         return db.execute(stmt).scalar()
 
 

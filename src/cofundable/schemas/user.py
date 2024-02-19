@@ -6,7 +6,7 @@ from cofundable.schemas.base import BASE_EXAMPLE, UUIDAuditResponseBase
 
 USER_EXAMPLE: dict[str, str | list] = {
     "name": "Alice Williams",
-    "username": "alicewilliams",
+    "handle": "alicewilliams",
     "bio": "I'm passionate about grassroots organizing for climate justice.",
 }
 
@@ -15,7 +15,7 @@ class UserBase(BaseModel):
     """Base schema for a user, with fields shared by POST, PUT, and GET."""
 
     name: str
-    username: str
+    handle: str
     bio: str | None = None
 
 

@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 class User(UUIDAuditBase):
     """Store information related to a user."""
 
-    username: Mapped[str]
+    handle: Mapped[str]
     name: Mapped[str]
     bio: Mapped[str | None]
 

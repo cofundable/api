@@ -10,28 +10,28 @@ from tests.utils import test_data
 
 
 class TestGetUserByUsername:
-    """Tests the get_user_by_username() method."""
+    """Tests the get_user_by_handle() method."""
 
     def test_return_correct_user_if_they_exist(self, test_session: Session):
         """The correct user should be returned if they exist."""
         # setup - confirm the user exists
-        username = "alice"
+        handle = "alice"
         namespace = test_data.namespace
-        alice_id = uuid5(namespace, username)
+        alice_id = uuid5(namespace, handle)
         alice = test_session.get(User, alice_id)
         assert alice is not None
-        assert alice.username == username
+        assert alice.handle == handle
         # execution
-        user = user_service.get_user_by_username(test_session, username)
+        user = user_service.get_user_by_handle(test_session, handle)
         assert user is not None
-        assert user.username == username
+        assert user.handle == handle
         assert user == alice
 
     def test_return_none_if_user_does_not_exist(self, test_session: Session):
-        """Return None if the username doesn't match an existing user."""
+        """Return None if the handle doesn't match an existing user."""
         # setup
-        username = "fake"
+        handle = "fake"
         # execution
-        result = user_service.get_user_by_username(test_session, username)
+        result = user_service.get_user_by_handle(test_session, handle)
         # validation - check that the result is None
         assert result is None

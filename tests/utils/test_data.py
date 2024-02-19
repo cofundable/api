@@ -60,12 +60,12 @@ ALICE = uuid5(namespace, "alice")
 BOB = uuid5(namespace, "bob")
 USERS = {
     ALICE: {
-        "username": "alice",
+        "handle": "alice",
         "name": "Alice Williams",
         "bio": "Bio for Alice",
     },
     BOB: {
-        "username": "bob",
+        "handle": "bob",
         "name": "Bob Johnson",
     },
 }
