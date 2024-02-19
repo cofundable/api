@@ -23,8 +23,8 @@ class MockTableData:
 
 
 # causes
-ACME = uuid5(namespace, "Acme")
-MUTUAL_AID = uuid5(namespace, "mutual aid")
+ACME = uuid5(namespace, "acme")
+MUTUAL_AID = uuid5(namespace, "mutual-aid")
 CAUSES = {
     ACME: {
         "name": "Acme",
