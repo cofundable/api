@@ -20,7 +20,10 @@ class User(UUIDAuditBase):
     name: Mapped[str]
     bio: Mapped[str | None]
 
-    bookmarks: Mapped[list[Bookmark]] = relationship(back_populates="user")
+    bookmarks: Mapped[list[Bookmark]] = relationship(
+        back_populates="user",
+        cascade="delete",
+    )
 
     # allows us to access bookmarked orgs directly
     bookmarked_causes: Mapped[list[Cause]] = relationship(

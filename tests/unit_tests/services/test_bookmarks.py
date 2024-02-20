@@ -43,10 +43,12 @@ class TestBookmarkCauseForUser:
         alice_id = uuid5(NAMESPACE, "alice")
         alice = test_session.get(User, alice_id)
         assert alice is not None
-        # setup - confirm acme exists
-        cause_handle = "acme"
+        # setup - confirm mutual-aid exists
+        cause_handle = "mutual-aid"
         cause = cause_service.get_cause_by_handle(test_session, cause_handle)
         assert cause is not None
+        # setup - confirm alice hasn't already bookmarked mutual-aid
+        assert cause not in alice.bookmarked_causes
         # execution
         bookmark = bookmark_service.bookmark_cause_for_user(
             db=test_session,

@@ -2,13 +2,18 @@
 
 from uuid import UUID, uuid5
 
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from cofundable.models.bookmark import Bookmark
 from cofundable.models.cause import Cause
+from cofundable.models.user import User
 from cofundable.schemas.cause import CauseRequestSchema
 from cofundable.services.causes import cause_service
 from cofundable.services.tags import tag_service
 from tests.utils import test_data
+
+NAMESPACE = test_data.namespace
 
 
 class TestCreate:
@@ -60,8 +65,7 @@ class TestGetCauseByHandle:
         """The correct cause should be returned if it exists."""
         # setup - confirm the user exists
         handle = "acme"
-        namespace = test_data.namespace
-        acme_id = uuid5(namespace, handle)
+        acme_id = uuid5(NAMESPACE, handle)
         acme = test_session.get(Cause, acme_id)
         assert acme is not None
         assert acme.handle == handle
@@ -70,3 +74,32 @@ class TestGetCauseByHandle:
         assert cause is not None
         assert cause.handle == handle
         assert cause == acme
+
+
+class TestDelete:
+    """Test the CauseCRUD.delete() method."""
+
+    def test_delete_cascades_to_bookmarks_but_not_users(
+        self,
+        test_session: Session,
+    ):
+        """Deleting a cause should delete associated bookmarks, but not users."""
+        # setup - confirm cause exists
+        handle = "acme"
+        acme_id = uuid5(NAMESPACE, handle)
+        assert test_session.get(Cause, acme_id) is not None
+        # set up - confirm bookmarks exist
+        bookmark_query = select(Bookmark).where(Bookmark.cause_id == acme_id)
+        bookmarks_before = test_session.execute(bookmark_query).scalars().all()
+        assert len(bookmarks_before) > 1
+        # set up - confirm alice exists
+        alice_id = uuid5(NAMESPACE, "alice")
+        assert test_session.get(User, alice_id) is not None
+        # execution
+        cause_service.delete(test_session, row_id=acme_id)
+        # validation - confirm cause and bookmarks were deleted
+        bookmarks_after = test_session.execute(bookmark_query).scalars().all()
+        assert test_session.get(Cause, acme_id) is None
+        assert len(bookmarks_after) == 0
+        # validation - confirm alice was NOT deleted
+        assert test_session.get(User, alice_id) is not None

@@ -22,4 +22,5 @@ class Cause(UUIDAuditBase):
 
     user_bookmarks: Mapped[list[Bookmark]] = relationship(
         back_populates="cause",
+        cascade="delete",
     )
