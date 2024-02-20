@@ -8,7 +8,7 @@ from sqlalchemy.orm import relationship
 
 from cofundable.models.base import Mapped, UUIDAuditBase
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from cofundable.models.bookmark import Bookmark
     from cofundable.models.cause import Cause
 
