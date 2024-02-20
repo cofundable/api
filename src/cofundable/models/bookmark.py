@@ -9,7 +9,7 @@ from sqlalchemy.orm import relationship
 
 from cofundable.models.base import Mapped, UUIDAuditBase, mapped_column
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from cofundable.models.cause import Cause
     from cofundable.models.user import User
 
@@ -19,11 +19,11 @@ class Bookmark(UUIDAuditBase):
 
     user_id: Mapped[UUID] = mapped_column(
         ForeignKey("user.id"),
-        primary_key=True,
+        nullable=False,
     )
-    cause_id: Mapped[str] = mapped_column(
+    cause_id: Mapped[UUID] = mapped_column(
         ForeignKey("cause.id"),
-        primary_key=True,
+        nullable=False,
     )
 
     # associations between Bookmark -> User
