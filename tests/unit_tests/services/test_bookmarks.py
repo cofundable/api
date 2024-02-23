@@ -18,7 +18,7 @@ NAMESPACE = test_data.namespace
 
 
 class TestGetUserBookmarksPaginated:
-    """Test the get_user_bookmarks_paginated() method."""
+    """Test the get_bookmarks_for_user() method."""
 
     def test_get_the_correct_results(self, test_session: Session):
         """The correct results should be returned for a given user."""
@@ -27,7 +27,7 @@ class TestGetUserBookmarksPaginated:
         alice = test_session.get(User, alice_id)
         assert alice is not None
         # execution
-        stmt = bookmark_service.get_user_bookmarks_paginated(alice_id)
+        stmt = bookmark_service.get_bookmarks_for_user(alice_id)
         bookmarks = test_session.execute(stmt).scalars().all()
         # validation
         assert len(alice.bookmarks) == len(bookmarks)

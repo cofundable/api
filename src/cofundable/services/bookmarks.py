@@ -29,7 +29,7 @@ class BookmarkCRUD(BASE_CLASSES):
         record = self.model(id=uuid4(), **data.model_dump())
         return self.commit_changes(db, record)
 
-    def get_user_bookmarks_paginated(self, user_id: UUID) -> Select:
+    def get_bookmarks_for_user(self, user_id: UUID) -> Select:
         """Query a user's bookmarks so that the results can be paginated."""
         return select(Bookmark).where(Bookmark.user_id == user_id)
 
