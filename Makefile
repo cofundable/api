@@ -36,11 +36,16 @@ local-server:
 	$(POETRY) run uvicorn cofundable.api:app --reload
 
 migration:
+ifdef message
 	@echo "=> Creating alembic migration script"
 	@echo "===================================="
-	$(POETRY) run alembic migration --autogenerate -m $(MESSAGE)
+	$(POETRY) run alembic revision --autogenerate -m "$(message)"
 	@echo "===================================="
 	@echo "=> Migration script created, check the alembic/versions sub-directory"
+else
+	@echo "Please pass a message for the migration script, for example:"
+	@echo "make migration message='<Migration message>'"
+endif
 
 migrate-up:
 	@echo "=> Migrating to the latest version of the database schema"
