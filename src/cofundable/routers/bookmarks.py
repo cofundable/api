@@ -34,10 +34,10 @@ def list_bookmarks_for_current_user(
 
 
 @bookmark_router.put(
-    "/user/bookmarks/{cause_handle}",
+    "/user/bookmarks/{cause}",
     summary="Bookmark a cause for the current user",
     response_model=BookmarkResponseSchema,
-    status_code=status.HTTP_201_CREATED,
+    status_code=status.HTTP_200_OK,
 )
 def bookmark_cause_for_current_user(
     db: Annotated[Session, Depends(get_db)],

@@ -11,9 +11,12 @@ from sqlalchemy.orm import sessionmaker, Session
 
 from cofundable import config
 from cofundable.api import app
-from cofundable.dependencies import database
+from cofundable.dependencies import database, auth
+from cofundable.models import User
+from cofundable.services.users import user_service
 
 from tests.utils.populate_db import populate_db
+from tests.utils.test_data import ALICE
 
 
 @pytest.fixture(scope="session", name="test_config")
@@ -54,5 +57,12 @@ def mock_client(test_session: Session):
         """Override the get_db() dependency to yield a test session."""
         yield test_session
 
+    def override_get_current_user() -> User:
+        """Override the get_current_user() dependency for authenticated endpoints."""
+        user = user_service.get(test_session, ALICE)
+        assert user is not None
+        return user
+
     app.dependency_overrides[database.get_db] = override_get_db
+    app.dependency_overrides[auth.get_current_user] = override_get_current_user
     return TestClient(app)

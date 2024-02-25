@@ -89,6 +89,7 @@ unauthorized_licenses = []
 disable = [
   "C0114", # Disables module docstrings
   "R0903", # Disables too few public methods
+  "R0801", # Disables duplicate code warning
 ]
 
 [[tool.mypy.overrides]]

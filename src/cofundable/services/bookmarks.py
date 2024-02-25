@@ -14,14 +14,14 @@ from cofundable.schemas.bookmark import (
 from cofundable.services.base import CRUDBase
 from cofundable.services.causes import cause_service
 
-BASE_CLASSES = CRUDBase[
+BaseClasses = CRUDBase[
     Bookmark,
     BookmarkCreateSchema,
     BookmarkUpdateSchema,
 ]
 
 
-class BookmarkCRUD(BASE_CLASSES):
+class BookmarkCRUD(BaseClasses):
     """Manage CRUD operations for the Bookmark model."""
 
     def create(self, db: Session, *, data: BookmarkCreateSchema) -> Bookmark:
