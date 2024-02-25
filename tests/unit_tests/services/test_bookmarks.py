@@ -17,7 +17,7 @@ from tests.utils import test_data
 NAMESPACE = test_data.namespace
 
 
-class TestGetUserBookmarksPaginated:
+class TestGetBookmarksForUser:
     """Test the get_bookmarks_for_user() method."""
 
     def test_get_the_correct_results(self, test_session: Session):
@@ -59,6 +59,34 @@ class TestBookmarkCauseForUser:
         assert isinstance(bookmark, Bookmark)
         assert bookmark.cause == cause
         assert bookmark.user == alice
+
+    def test_update_bookmark_if_it_already_exists(self, test_session: Session):
+        """If a bookmark already exists, update it rather creating a new one."""
+        # setup - get current number of bookmarks
+        old_bookmarks = bookmark_service.get_all(test_session)
+        # setup - confirm user exists
+        alice_id = uuid5(NAMESPACE, "alice")
+        alice = test_session.get(User, alice_id)
+        assert alice is not None
+        # setup - confirm acme exists
+        cause_handle = "acme"
+        cause = cause_service.get_cause_by_handle(test_session, cause_handle)
+        assert cause is not None
+        # setup - confirm alice has already bookmarked acme
+        assert cause in alice.bookmarked_causes
+        # execution
+        bookmark = bookmark_service.bookmark_cause_for_user(
+            db=test_session,
+            user_id=alice_id,
+            cause_handle=cause_handle,
+        )
+        new_bookmarks = bookmark_service.get_all(test_session)
+        # validation
+        assert isinstance(bookmark, Bookmark)
+        assert bookmark.cause == cause
+        assert bookmark.user == alice
+        # validation - confirm a new bookmark wasn't created
+        assert len(old_bookmarks) == len(new_bookmarks)
 
     def test_raise_error_if_cause_does_not_exist(self, test_session: Session):
         """The CauseHandleNotFoundError should be raised if the cause doesn't exist."""

@@ -33,6 +33,19 @@ class BookmarkCRUD(BASE_CLASSES):
         """Query a user's bookmarks so that the results can be paginated."""
         return select(Bookmark).where(Bookmark.user_id == user_id)
 
+    def get_bookmark_by_user_and_cause(
+        self,
+        db: Session,
+        *,
+        user_id: UUID,
+        cause_id: UUID,
+    ) -> Bookmark | None:
+        """Find a bookmark by its user_id and cause_id."""
+        stmt = select(self.model)
+        stmt = stmt.where(self.model.cause_id == cause_id)
+        stmt = stmt.where(self.model.user_id == user_id)
+        return db.execute(stmt).scalar()
+
     def bookmark_cause_for_user(
         self,
         db: Session,
@@ -44,6 +57,13 @@ class BookmarkCRUD(BASE_CLASSES):
         cause = cause_service.get_cause_by_handle(db, cause_handle)
         if not cause:
             raise CauseHandleNotFoundError(handle=cause_handle)
+        bookmark = self.get_bookmark_by_user_and_cause(
+            db=db,
+            user_id=user_id,
+            cause_id=cause.id,
+        )
+        if bookmark:
+            return bookmark
         return self.create(
             db=db,
             data=BookmarkCreateSchema(user_id=user_id, cause_id=cause.id),

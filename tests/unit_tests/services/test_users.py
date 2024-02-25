@@ -58,7 +58,7 @@ class TestDelete:
         # set up - confirm bookmarks exist
         bookmark_query = select(Bookmark).where(Bookmark.user_id == alice_id)
         bookmarks_before = test_session.execute(bookmark_query).scalars().all()
-        assert len(bookmarks_before) > 1
+        assert len(bookmarks_before) == 1
         # execution
         user_service.delete(test_session, row_id=alice_id)
         # validation - confirm user and bookmarks were deleted

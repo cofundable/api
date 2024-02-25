@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from sqlalchemy import UUID, ForeignKey
+from sqlalchemy import UUID, ForeignKey, UniqueConstraint
 from sqlalchemy.orm import relationship
 
 from cofundable.models.base import Mapped, UUIDAuditBase, mapped_column
@@ -16,6 +16,8 @@ if TYPE_CHECKING:  # pragma: no cover
 
 class Bookmark(UUIDAuditBase):
     """Store information related to a user's bookmarks."""
+
+    __table_args__ = (UniqueConstraint("user_id", "cause_id"),)
 
     user_id: Mapped[UUID] = mapped_column(
         ForeignKey("user.id"),

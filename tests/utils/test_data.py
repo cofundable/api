@@ -80,7 +80,7 @@ BOOKMARKS = {
     },
     BOB_ACME: {
         "cause_id": ACME,
-        "user_id": ALICE,
+        "user_id": BOB,
     },
 }
 
