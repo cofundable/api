@@ -1,7 +1,6 @@
 """Manage AuthN/AuthZ dependencies for Cofundable API."""
 
 from typing import Annotated
-from uuid import uuid4
 
 from fastapi import Depends, HTTPException, status
 from sqlalchemy.orm import Session
@@ -19,7 +18,7 @@ def get_current_user(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    user = user_service.get(db, uuid4())
+    user = db.execute(user_service.get_all_paginated()).scalar()
     if not user:
         raise credentials_exception
     return user
