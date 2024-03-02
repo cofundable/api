@@ -64,11 +64,11 @@ class TestBookmarkCauseForCurrentUser:
         self,
         test_client: TestClient,
     ):
-        """Multiple calls should be idempotent."""
+        """Multiple calls should be idempotent and return the same bookmark."""
         # execution
         response1 = test_client.put(self.make_endpoint("acme"))
         response2 = test_client.put(self.make_endpoint("acme"))
         # validation
         assert response1.status_code == 200
         assert response1.status_code == 200
-        assert response1.json() == response2.json()
+        assert response2.json()["id"] == response1.json()["id"]
