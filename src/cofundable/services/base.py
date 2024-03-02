@@ -45,7 +45,7 @@ class CRUDBase(Generic[ModelTypeT, CreateSchemaTypeT, UpdateSchemaTypeT]):
 
         Returns
         -------
-        Optional[ModelTypeT]
+        ModelTypeT | None
             Returns an instance of the SQLAlchemy model being queried if a row
             is found for the primary key value passed, or None otherwise
 

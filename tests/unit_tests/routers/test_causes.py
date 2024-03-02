@@ -45,6 +45,62 @@ class TestListCauses:
         assert response_body["links"]["prev"] is None
 
 
+class TestPostCause:
+    """Test the POST /causes/ endpoint."""
+
+    ENDPOINT = "/causes/"
+
+    def test_return_status_code_201_if_successful(
+        self,
+        test_client: TestClient,
+    ):
+        """A successful response should return status code 201."""
+        # setup
+        payload = {
+            "name": "Test cause",
+            "description": "This is a test description.",
+            "handle": "testcause",
+            "tags": ["a", "b"],
+        }
+        # execution
+        response = test_client.post(self.ENDPOINT, json=payload)
+        response_body = response.json()
+        # validation
+        assert response.status_code == 201
+        assert response_body["name"] == "Test cause"
+
+    def test_return_status_code_422_if_missing_required_field(
+        self,
+        test_client: TestClient,
+    ):
+        """If a required field is missing, return status code 422."""
+        # setup
+        payload = {
+            "name": "Test cause with missing handle",
+            "tags": ["a", "b"],
+        }
+        # execution
+        response = test_client.post(self.ENDPOINT, json=payload)
+        # validation - check that status code is 422
+        assert response.status_code == 422
+
+    def test_create_cause_without_desc_or_tags(self, test_client: TestClient):
+        """We should be able to create an org without tags or a description."""
+        # setup
+        payload = {
+            "name": "Test cause with only required fields",
+            "handle": "test-cause-only-required",
+        }
+        # execution
+        response = test_client.post(self.ENDPOINT, json=payload)
+        response_body = response.json()
+        print(response_body)
+        # validation - check that status code is 201 and fields are empty
+        assert response.status_code == 201
+        assert response_body["tags"] == []
+        assert response_body["description"] is None
+
+
 class TestGetCauseById:
     """Test the GET /causes/<cause_id> endpoint."""
 

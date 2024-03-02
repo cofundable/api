@@ -3,6 +3,7 @@
 from uuid import uuid4
 
 from fastapi.encoders import jsonable_encoder
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from cofundable.models.cause import Cause
@@ -13,6 +14,11 @@ from cofundable.services.tags import tag_service
 
 class CauseCRUD(CRUDBase[Cause, CauseRequestSchema, CauseResponseSchema]):
     """Manage CRUD operations for the Cause model."""
+
+    def get_cause_by_handle(self, db: Session, handle: str) -> Cause | None:
+        """Find a cause by its handle."""
+        stmt = select(Cause).where(Cause.handle == handle)
+        return db.execute(stmt).scalar()
 
     def create(
         self,

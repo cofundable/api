@@ -1,9 +1,9 @@
-"""Routes API requests related to Cofundable causes."""
+"""Route API requests related to Cofundable causes."""
 
 from typing import Annotated, Sequence
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi_pagination.ext.sqlalchemy import paginate
 from fastapi_pagination.links import Page
 
@@ -32,6 +32,7 @@ def list_causes(db: Annotated[Session, Depends(get_db)]) -> Sequence[Cause]:
     "/",
     summary="Create a cause",
     response_model=CauseResponseSchema,
+    status_code=status.HTTP_201_CREATED,
 )
 def post_cause(
     db: Annotated[Session, Depends(get_db)],
@@ -53,5 +54,8 @@ def get_cause_by_id(
     """Fetch the details for a specific cause using its id."""
     cause = cause_service.get(db=db, row_id=cause_id)
     if not cause:
-        raise HTTPException(status_code=404, detail="Cause not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Cause not found",
+        )
     return cause
