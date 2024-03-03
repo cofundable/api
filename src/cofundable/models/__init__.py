@@ -11,12 +11,14 @@ so that the migration scripts are auto-generated correctly
 
 __all__ = [
     "UUIDAuditBase",
+    "Account",
     "Bookmark",
     "Cause",
     "Tag",
     "User",
 ]
 
+from cofundable.models.account import Account
 from cofundable.models.base import UUIDAuditBase
 from cofundable.models.bookmark import Bookmark
 from cofundable.models.cause import Cause

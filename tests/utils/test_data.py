@@ -22,6 +22,30 @@ class MockTableData:
     records: dict[UUID, dict]
 
 
+# accounts
+ACCOUNT_ACME = uuid5(namespace, "acme-account")
+ACCOUNT_AID = uuid5(namespace, "mutual-aid-account")
+ACCOUNT_ALICE = uuid5(namespace, "alice-account")
+ACCOUNT_BOB = uuid5(namespace, "bob-account")
+ACCOUNTS = {
+    ACCOUNT_ACME: {
+        "name": "acme",
+        "balance": 5,
+    },
+    ACCOUNT_AID: {
+        "name": "mutual-aid",
+        "balance": 0,
+    },
+    ACCOUNT_ALICE: {
+        "name": "alice",
+        "balance": 10,
+    },
+    ACCOUNT_BOB: {
+        "name": "bob",
+        "balance": 5,
+    },
+}
+
 # causes
 ACME = uuid5(namespace, "acme")
 MUTUAL_AID = uuid5(namespace, "mutual-aid")
@@ -30,11 +54,13 @@ CAUSES = {
         "name": "Acme",
         "handle": "acme",
         "description": "Local organization",
+        "account_id": ACCOUNT_ACME,
     },
     MUTUAL_AID: {
         "name": "Mutual aid group",
         "handle": "mutual-aid",
         "description": "Local organization",
+        "account_id": ACCOUNT_AID,
     },
 }
 
@@ -63,10 +89,12 @@ USERS = {
         "handle": "alice",
         "name": "Alice Williams",
         "bio": "Bio for Alice",
+        "account_id": ACCOUNT_ALICE,
     },
     BOB: {
         "handle": "bob",
         "name": "Bob Johnson",
+        "account_id": ACCOUNT_BOB,
     },
 }
 
