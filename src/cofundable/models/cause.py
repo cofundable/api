@@ -26,17 +26,20 @@ class Cause(UUIDAuditBase):
     description: Mapped[str | None]
     account_id: Mapped[UUID] = mapped_column(
         ForeignKey("account.id"),
-        nullable=True,
+        nullable=False,
     )
 
-    # Each cause should only have one account
+    # each cause should only have one account
     account: Mapped[Account] = relationship(back_populates="cause")
 
+    # return associated tags as a set instead of a list
     tags: Mapped[set[Tag]] = relationship(
         secondary=cause_tag_table,
         back_populates="causes",
+        cascade="save-update",
     )
 
+    # return list of bookmarks for a given cause
     user_bookmarks: Mapped[list[Bookmark]] = relationship(
         back_populates="cause",
         cascade="delete",
