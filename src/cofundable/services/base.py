@@ -82,6 +82,7 @@ class CRUDBase(Generic[ModelTypeT, CreateSchemaTypeT, UpdateSchemaTypeT]):
         db: Session,
         *,
         data: CreateSchemaTypeT,  # must be passed as keyword argument
+        defer_commit: bool = False,  # optionally defer commit
     ) -> ModelTypeT:
         """
         Insert a new row into the table.
@@ -93,10 +94,16 @@ class CRUDBase(Generic[ModelTypeT, CreateSchemaTypeT, UpdateSchemaTypeT]):
         data: CreateSchemaTypeT
             The instance of the Pydantic schema that contains the data used to
             insert a new row in the database
+        defer_commit: bool
+            Optionally defer committing this new record. This allows users to
+            create multiple records in a single transaction block and roll back
+            all creations if one fails.
 
         """
         model_data: dict = jsonable_encoder(data)  # makes data JSON-compatible
         record = self.model(id=uuid4(), **model_data)
+        if defer_commit:
+            return record
         return self.commit_changes(db, record)
 
     def update(
@@ -153,7 +160,11 @@ class CRUDBase(Generic[ModelTypeT, CreateSchemaTypeT, UpdateSchemaTypeT]):
         db.delete(record)
         db.commit()
 
-    def commit_changes(self, db: Session, record: ModelTypeT) -> ModelTypeT:
+    def commit_changes(
+        self,
+        db: Session,
+        record: ModelTypeT,
+    ) -> ModelTypeT:
         """Add changes to a session, commits them, and refreshes the record."""
         db.add(record)
         db.commit()
