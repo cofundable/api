@@ -25,16 +25,13 @@ class User(UUIDAuditBase):
     bio: Mapped[str | None]
     account_id: Mapped[UUID] = mapped_column(
         ForeignKey("account.id"),
-        nullable=True,
+        nullable=False,
     )
 
-    # #########################################################
-    # Relationships
-    # #########################################################
-
-    # Each user should only have one account
+    # each user should only have one account
     account: Mapped[Account] = relationship(back_populates="user")
 
+    # access bookmark through the bookmark model
     bookmarks: Mapped[list[Bookmark]] = relationship(
         back_populates="user",
         cascade="delete",
