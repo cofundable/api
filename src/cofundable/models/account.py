@@ -16,6 +16,7 @@ from cofundable.models.base import Mapped, UUIDAuditBase, mapped_column
 
 if TYPE_CHECKING:  # pragma: no cover
     from cofundable.models.cause import Cause
+    from cofundable.models.transaction import Transaction
     from cofundable.models.user import User
 
 
@@ -28,3 +29,8 @@ class Account(UUIDAuditBase):
     # Each account should have either a user or a cause but not both
     user: Mapped[User] = relationship(back_populates="account")
     cause: Mapped[Cause] = relationship(back_populates="account")
+
+    transactions: Mapped[list[Transaction]] = relationship(
+        back_populates="account",
+        order_by="Transaction.created_at",
+    )

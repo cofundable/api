@@ -7,7 +7,9 @@ from cofundable.models import (
     UUIDAuditBase,
     Bookmark,
     Cause,
+    EntryType,
     Tag,
+    Transaction,
     User,
 )
 
@@ -23,6 +25,7 @@ class MockTableData:
 
 
 # accounts
+ACCOUNT_COFUNDABLE = uuid5(namespace, "cofundable-account")
 ACCOUNT_ACME = uuid5(namespace, "acme-account")
 ACCOUNT_AID = uuid5(namespace, "mutual-aid-account")
 ACCOUNT_ALICE = uuid5(namespace, "alice-account")
@@ -49,6 +52,7 @@ ACCOUNTS = {
 # causes
 ACME = uuid5(namespace, "acme")
 MUTUAL_AID = uuid5(namespace, "mutual-aid")
+COFUNDABLE = uuid5(namespace, "cofundable")
 CAUSES = {
     ACME: {
         "name": "Acme",
@@ -61,6 +65,12 @@ CAUSES = {
         "handle": "mutual-aid",
         "description": "Local organization",
         "account_id": ACCOUNT_AID,
+    },
+    COFUNDABLE: {
+        "name": "Cofundable",
+        "handle": "cofundable",
+        "description": "Main organization",
+        "account_id": ACCOUNT_COFUNDABLE,
     },
 }
 
@@ -112,10 +122,31 @@ BOOKMARKS = {
     },
 }
 
+# transactions
+COFUNDABLE_TO_ALICE = uuid5(namespace, "cofundable-to-alice")
+ALICE_FROM_COFUNDABLE = uuid5(namespace, "alice-from-cofundable")
+ALICE_TO_ACME = uuid5(namespace, "alice-inflow")
+ACME_FROM_ALICE = uuid5(namespace, "acme-from-alice")
+TRANSACTIONS = {
+    COFUNDABLE_TO_ALICE: {
+        "amount": 10,
+        "account_id": ACCOUNT_COFUNDABLE,
+        "kind": EntryType.debit,
+        "match_entry_id": ALICE_FROM_COFUNDABLE,
+    },
+    ALICE_FROM_COFUNDABLE: {
+        "amount": 10,
+        "account_id": ACCOUNT_ALICE,
+        "kind": EntryType.credit,
+        "match_entry_id": COFUNDABLE_TO_ALICE,
+    },
+}
+
 # records to create and insert directly
 UUID_TABLES = {
     "cause": MockTableData(model=Cause, records=CAUSES),
     "tag": MockTableData(model=Tag, records=TAGS),
     "user": MockTableData(model=User, records=USERS),
     "bookmark": MockTableData(model=Bookmark, records=BOOKMARKS),
+    "transactions": MockTableData(model=Transaction, records=TRANSACTIONS),
 }
