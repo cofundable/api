@@ -2,7 +2,6 @@
 
 from uuid import uuid4
 
-from fastapi.encoders import jsonable_encoder
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -30,16 +29,19 @@ class CauseCRUD(CRUDBase[Cause, CauseRequestSchema, CauseResponseSchema]):
         db: Session,
         *,
         data: CauseRequestSchema,
+        defer_commit: bool = False,  # optionally defer commit
     ) -> Cause:
         """Create a new cause."""
         # convert the cause data to a dict and remove tags to prevent an error
-        cause_data = jsonable_encoder(data)
+        cause_data = data.model_dump()
         cause_data.pop("tags")
         # create a new record in the cause table then assign the tags to it
         cause = self.model(id=uuid4(), **cause_data)
         cause.account = self._create_new_account(db, name=data.handle)
         cause.tags = self._get_tags(db, tags=data.tags)
-        # commit the new record to the db and return it
+        # optionally commit the new record before returning it
+        if defer_commit:
+            return cause
         return self.commit_changes(db, cause)
 
     def _get_tags(self, db: Session, tags: list[str]) -> set[Tag]:

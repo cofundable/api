@@ -19,12 +19,20 @@ from cofundable.services.base import CRUDBase
 class UserCRUD(CRUDBase[User, UserRequestSchema, UserResponseSchema]):
     """Manage CRUD operations for the User model."""
 
-    def create(self, db: Session, *, data: UserRequestSchema) -> User:
+    def create(
+        self,
+        db: Session,
+        *,
+        data: UserRequestSchema,
+        defer_commit: bool = False,  # optionally defer commit
+    ) -> User:
         """Create a new user with an account balance of 0."""
         # create a new user and an associated account
         user = self.model(id=uuid4(), **jsonable_encoder(data))
         user.account = self._create_new_account(db, name=data.handle)
-        # commit the new record to the db and return it
+        # optionally commit before returning user
+        if defer_commit:
+            return user
         return self.commit_changes(db, user)
 
     def get_user_by_handle(self, db: Session, handle: str) -> User | None:

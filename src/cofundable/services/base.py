@@ -100,8 +100,7 @@ class CRUDBase(Generic[ModelTypeT, CreateSchemaTypeT, UpdateSchemaTypeT]):
             all creations if one fails.
 
         """
-        model_data: dict = jsonable_encoder(data)  # makes data JSON-compatible
-        record = self.model(id=uuid4(), **model_data)
+        record = self.model(id=uuid4(), **data.model_dump())
         if defer_commit:
             return record
         return self.commit_changes(db, record)

@@ -1,3 +1,4 @@
+# pylint: disable=invalid-name
 """Create an ORM for the transaction table in the database."""
 
 from __future__ import annotations
