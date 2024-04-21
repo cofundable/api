@@ -7,6 +7,7 @@ or cause to earn, spend, and pledge shares in Cofundable.
 
 from __future__ import annotations
 
+from decimal import Decimal  # noqa: TCH003
 from typing import TYPE_CHECKING
 
 from sqlalchemy import Numeric
@@ -24,7 +25,7 @@ class Account(UUIDAuditBase):
     """Manage transactions for a user or cause."""
 
     name: Mapped[str]
-    balance: Mapped[Numeric] = mapped_column(Numeric)
+    balance: Mapped[Decimal] = mapped_column(Numeric)
 
     # Each account should have either a user or a cause but not both
     user: Mapped[User] = relationship(back_populates="account")

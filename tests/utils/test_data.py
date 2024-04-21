@@ -5,6 +5,7 @@ from uuid import UUID, uuid4, uuid5
 
 from cofundable.models import (
     UUIDAuditBase,
+    Account,
     Bookmark,
     Cause,
     EntryType,
@@ -33,19 +34,19 @@ ACCOUNT_BOB = uuid5(namespace, "bob-account")
 ACCOUNTS = {
     ACCOUNT_ACME: {
         "name": "acme",
-        "balance": 5,
+        "balance": 5.00,
     },
     ACCOUNT_AID: {
         "name": "mutual-aid",
-        "balance": 0,
+        "balance": 0.00,
     },
     ACCOUNT_ALICE: {
         "name": "alice",
-        "balance": 10,
+        "balance": 10.00,
     },
     ACCOUNT_BOB: {
         "name": "bob",
-        "balance": 5,
+        "balance": 5.00,
     },
 }
 
@@ -148,5 +149,6 @@ UUID_TABLES = {
     "tag": MockTableData(model=Tag, records=TAGS),
     "user": MockTableData(model=User, records=USERS),
     "bookmark": MockTableData(model=Bookmark, records=BOOKMARKS),
+    "accounts": MockTableData(model=Account, records=ACCOUNTS),
     "transactions": MockTableData(model=Transaction, records=TRANSACTIONS),
 }

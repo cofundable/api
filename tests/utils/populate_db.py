@@ -26,8 +26,6 @@ def create_records_and_add_to_session(
     """
     record_map = {}
     for record_id, test_data in records.items():
-        if "amount" in test_data:
-            print(test_data)
         record = model(id=record_id, **test_data)
         record_map[record_id] = record
         session.add(record)
