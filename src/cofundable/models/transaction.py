@@ -39,7 +39,7 @@ class Transaction(UUIDAuditBase):
     )
     match_entry_id: Mapped[UUID] = mapped_column(
         ForeignKey("transaction.id"),
-        nullable=False,
+        nullable=True,
     )
 
     # relationships
@@ -47,4 +47,5 @@ class Transaction(UUIDAuditBase):
     match_entry: Mapped[Transaction] = relationship(
         uselist=False,
         remote_side=[id],
+        post_update=True,  # prevents circular dependency error
     )

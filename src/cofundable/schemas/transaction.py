@@ -1,5 +1,6 @@
 """Declare schemas for transactions between accounts."""
 
+from decimal import Decimal
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -11,7 +12,7 @@ from cofundable.schemas.account import AccountSchema
 class TransactionSchema(BaseModel):
     """Base schema for a transaction, with common fields."""
 
-    amount: int | float
+    amount: float | Decimal
     kind: EntryType
     note: str | None = None
 
