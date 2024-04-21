@@ -15,21 +15,11 @@ CreateSchemaTypeT = TypeVar("CreateSchemaTypeT", bound=BaseModel)
 UpdateSchemaTypeT = TypeVar("UpdateSchemaTypeT", bound=BaseModel)
 
 
-class CRUDBase(Generic[ModelTypeT, CreateSchemaTypeT, UpdateSchemaTypeT]):
-    """
-    CRUD class with default methods to Create, Read, Update, Delete (CRUD).
-
-    Parameters
-    ----------
-    model: Type[ModelTypeT]
-        A SQLAlchemy model class for which CRUD operations will be supported
-    schema: Type[BaseModel]
-        A Pydantic model (schema) class to use to return the
-
-    """
+class InsertOnlyBase(Generic[ModelTypeT, CreateSchemaTypeT]):
+    """Base class that supports Create and Read methods but not Update or Delete."""
 
     def __init__(self, model: Type[ModelTypeT]) -> None:
-        """Init the CRUD class with a given SQLAlchemy model."""
+        """Init the InsertOnlyBase class with a given SQLAlchemy model."""
         self.model = model
 
     def get(self, db: Session, row_id: UUID) -> ModelTypeT | None:
@@ -105,6 +95,38 @@ class CRUDBase(Generic[ModelTypeT, CreateSchemaTypeT, UpdateSchemaTypeT]):
             return record
         return self.commit_changes(db, record)
 
+    def commit_changes(
+        self,
+        db: Session,
+        record: ModelTypeT,
+    ) -> ModelTypeT:
+        """Add changes to a session, commits them, and refreshes the record."""
+        db.add(record)
+        db.commit()
+        db.refresh(record)  # issues a SELECT stmt to refresh values of record
+        return record
+
+
+class CRUDBase(
+    Generic[ModelTypeT, CreateSchemaTypeT, UpdateSchemaTypeT],
+    InsertOnlyBase[ModelTypeT, CreateSchemaTypeT],
+):
+    """
+    CRUD class with default methods to Create, Read, Update, Delete (CRUD).
+
+    Parameters
+    ----------
+    model: Type[ModelTypeT]
+        A SQLAlchemy model class for which CRUD operations will be supported
+    schema: Type[BaseModel]
+        A Pydantic model (schema) class to use to return the
+
+    """
+
+    def __init__(self, model: Type[ModelTypeT]) -> None:
+        """Init the CRUD class with a given SQLAlchemy model."""
+        super().__init__(model=model)
+
     def update(
         self,
         db: Session,
@@ -158,14 +180,3 @@ class CRUDBase(Generic[ModelTypeT, CreateSchemaTypeT, UpdateSchemaTypeT]):
         record = db.get(self.model, row_id)
         db.delete(record)
         db.commit()
-
-    def commit_changes(
-        self,
-        db: Session,
-        record: ModelTypeT,
-    ) -> ModelTypeT:
-        """Add changes to a session, commits them, and refreshes the record."""
-        db.add(record)
-        db.commit()
-        db.refresh(record)  # issues a SELECT stmt to refresh values of record
-        return record
