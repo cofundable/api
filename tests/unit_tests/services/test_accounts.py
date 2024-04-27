@@ -76,4 +76,3 @@ class TestTransferShares:
         # validation - confirm balances were adjusted correctly
         assert source.balance == source_balance_old - amount
         assert target.balance == target_balance_old + amount
-        assert 0

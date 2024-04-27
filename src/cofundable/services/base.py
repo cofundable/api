@@ -45,26 +45,31 @@ class InsertOnlyBase(Generic[ModelTypeT, CreateSchemaTypeT]):
     def get_all(
         self,
         db: Session,
+        query: sa.Select | None = None,
     ) -> Sequence[ModelTypeT]:
         """
-        Return all of the entries from the table.
+        Return all rows in the table, or from the query if one is provided.
 
         Parameters
         ----------
         db: Session
             Instance of SQLAlchemy session that manages database transactions
+        query: Select | None
+            SQLAlchemy query to fetch all records from. If a query isn't provided,
+            the method will return all records in the table by default
 
         Returns
         -------
-        List[ModelTypeT]
+        Sequence[ModelTypeT]
             Returns a list of instances of the SQLAlchemy model being queried
 
         """
-        stmt = sa.select(self.model)
-        return db.execute(stmt).scalars().all()
+        if query is None:
+            query = self.query_all()
+        return db.execute(query).scalars().all()
 
-    def get_all_paginated(self) -> sa.Select:
-        """Return a query all records that can be paginated."""
+    def query_all(self) -> sa.Select:
+        """Return a query of all records that can be paginated."""
         return sa.select(self.model)
 
     def create(

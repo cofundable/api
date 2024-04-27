@@ -32,6 +32,10 @@ ACCOUNT_AID = uuid5(namespace, "mutual-aid-account")
 ACCOUNT_ALICE = uuid5(namespace, "alice-account")
 ACCOUNT_BOB = uuid5(namespace, "bob-account")
 ACCOUNTS = {
+    ACCOUNT_COFUNDABLE: {
+        "name": "cofundable",
+        "balance": 0.0,
+    },
     ACCOUNT_ACME: {
         "name": "acme",
         "balance": 5.00,
