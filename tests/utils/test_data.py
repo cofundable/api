@@ -145,6 +145,18 @@ TRANSACTIONS = {
         "kind": EntryType.credit,
         "match_entry_id": COFUNDABLE_TO_ALICE,
     },
+    ALICE_TO_ACME: {
+        "amount": 5,
+        "account_id": ACCOUNT_ALICE,
+        "kind": EntryType.debit,
+        "match_entry_id": ACME_FROM_ALICE,
+    },
+    ACME_FROM_ALICE: {
+        "amount": 5,
+        "account_id": ACCOUNT_ACME,
+        "kind": EntryType.credit,
+        "match_entry_id": ALICE_TO_ACME,
+    },
 }
 
 # records to create and insert directly

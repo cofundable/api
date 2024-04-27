@@ -2,6 +2,7 @@
 
 from decimal import Decimal
 
+import sqlalchemy as sa
 from sqlalchemy.orm import Session
 
 from cofundable.models.account import Account
@@ -27,6 +28,7 @@ class TransactionService(InsertOnlyBase[Transaction, TransactionCreateSchema]):
         else:
             account.balance += Decimal(amount)
         db.add(account)
+        # create and return transaction without committing
         return self.create(
             db=db,
             data=TransactionCreateSchema(
@@ -36,6 +38,19 @@ class TransactionService(InsertOnlyBase[Transaction, TransactionCreateSchema]):
             ),
             defer_commit=True,
         )
+
+    def query_transactions_by_account(
+        self,
+        account: Account,
+        entry_type: EntryType | None = None,
+    ) -> sa.Select:
+        """Return a query that filters transactions by account_id."""
+        # select transactions for a given account
+        stmt = sa.select(Transaction)
+        stmt = stmt.where(Transaction.account_id == account.id)
+        if entry_type:
+            stmt = stmt.where(Transaction.kind == entry_type)
+        return stmt.order_by(sa.desc(Transaction.created_at))
 
 
 transaction_service = TransactionService(model=Transaction)
