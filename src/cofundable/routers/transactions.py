@@ -15,6 +15,7 @@ from cofundable.schemas.transaction import (
     TransactionSchema,
     TransferSharesBodySchema,
 )
+from cofundable.services.accounts import account_service
 from cofundable.services.causes import cause_service
 from cofundable.services.transactions import transaction_service
 
@@ -27,19 +28,31 @@ transaction_router = APIRouter(
 @transaction_router.post(
     "/user/transactions/transfer",
     summary="Transfer shares from the current user",
-    status_code=status.HTTP_201_CREATED,
+    status_code=status.HTTP_202_ACCEPTED,
 )
 def transfer_shares_for_current_user(
+    db: Annotated[Session, Depends(get_db)],
     curr_user: Annotated[User, Depends(get_current_user)],
     data: TransferSharesBodySchema,
-) -> dict:
+) -> None:
     """Transfer shares from the currently authenticated user to another account."""
     if curr_user.account.balance < data.amount:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Current user doesn't have enough shares to transfer that amount",
         )
-    return data.model_dump()
+    to_account = account_service.get(db, data.to_account_id)
+    if not to_account:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"No account found with id: {data.to_account_id.hex}",
+        )
+    account_service.transfer_shares(
+        db=db,
+        amount=data.amount,
+        to_account=to_account,
+        from_account=curr_user.account,
+    )
 
 
 @transaction_router.get(
