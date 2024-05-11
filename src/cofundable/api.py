@@ -5,12 +5,14 @@ from fastapi_pagination import add_pagination
 
 from cofundable.routers.bookmarks import bookmark_router
 from cofundable.routers.causes import cause_router
+from cofundable.routers.transactions import transaction_router
 from cofundable.routers.users import user_router
 
 app = FastAPI()
 app.include_router(cause_router)
 app.include_router(user_router)
 app.include_router(bookmark_router)
+app.include_router(transaction_router)
 add_pagination(app)
 
 

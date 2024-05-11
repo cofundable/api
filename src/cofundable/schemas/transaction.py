@@ -28,3 +28,10 @@ class TransactionDumpSchema(TransactionSchema):
 
     account: AccountSchema
     match_entry_id: UUID
+
+
+class TransferSharesBodySchema(BaseModel):
+    """Schema used to deserialize the body of POST user/transactions/transfer."""
+
+    to_account_id: UUID
+    amount: Decimal

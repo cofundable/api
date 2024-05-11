@@ -49,8 +49,16 @@ def fixture_session(test_config: Dynaconf):
         yield session
 
 
+@pytest.fixture(name="curr_user")
+def fixture_current_user(test_session: Session) -> User:
+    """Return a users as the current user."""
+    user = user_service.get(test_session, ALICE)
+    assert user is not None
+    return user
+
+
 @pytest.fixture(name="test_client")
-def mock_client(test_session: Session):
+def mock_client(test_session: Session, curr_user: User) -> TestClient:
     """Create a mock client to test the API."""
 
     def override_get_db() -> Generator[Session, None, None]:
@@ -59,9 +67,7 @@ def mock_client(test_session: Session):
 
     def override_get_current_user() -> User:
         """Override the get_current_user() dependency for authenticated endpoints."""
-        user = user_service.get(test_session, ALICE)
-        assert user is not None
-        return user
+        return curr_user
 
     app.dependency_overrides[database.get_db] = override_get_db
     app.dependency_overrides[auth.get_current_user] = override_get_current_user
