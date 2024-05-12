@@ -16,6 +16,7 @@ class TagsCRUD(CRUDBase[Tag, TagSchema, TagSchema]):
         db: Session,
         *,
         tag_names: list[str],
+        defer_commit: bool = False,
     ) -> set[Tag]:
         """Find a list of tag entries by name, or create them if they don't exist."""
         # find existing tags records by name
@@ -24,8 +25,12 @@ class TagsCRUD(CRUDBase[Tag, TagSchema, TagSchema]):
         # create new tag records if they don't exist
         for tag_name in tag_names:
             if tag_name not in existing_tags:
-                tag_data = TagSchema(name=tag_name)
-                tags.add(self.create(db=db, data=tag_data))
+                tag = self.create(
+                    db=db,
+                    data=TagSchema(name=tag_name),
+                    defer_commit=defer_commit,
+                )
+                tags.add(tag)
         # return existing and newly created tags
         return tags
 

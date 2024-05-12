@@ -18,7 +18,7 @@ def get_current_user(
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
-    user = db.execute(user_service.get_all_paginated()).scalar()
+    user = db.execute(user_service.query_all()).scalar()
     if not user:
         raise credentials_exception
     return user

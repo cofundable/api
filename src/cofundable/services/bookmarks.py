@@ -1,6 +1,6 @@
 """Handle business logic related to Cofundable bookmarks."""
 
-from uuid import UUID, uuid4
+from uuid import UUID
 
 from sqlalchemy import Select, select
 from sqlalchemy.orm import Session
@@ -23,11 +23,6 @@ BaseClasses = CRUDBase[
 
 class BookmarkCRUD(BaseClasses):
     """Manage CRUD operations for the Bookmark model."""
-
-    def create(self, db: Session, *, data: BookmarkCreateSchema) -> Bookmark:
-        """Create a new bookmark."""
-        record = self.model(id=uuid4(), **data.model_dump())
-        return self.commit_changes(db, record)
 
     def get_bookmarks_for_user(self, user_id: UUID) -> Select:
         """Query a user's bookmarks so that the results can be paginated."""

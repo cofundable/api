@@ -25,7 +25,7 @@ cause_router = APIRouter(
 )
 def list_causes(db: Annotated[Session, Depends(get_db)]) -> Sequence[Cause]:
     """Fetch summary-level information about a list of causes."""
-    return paginate(conn=db, query=cause_service.get_all_paginated())
+    return paginate(conn=db, query=cause_service.query_all())
 
 
 @cause_router.post(
