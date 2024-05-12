@@ -26,7 +26,7 @@ def fixture_config():
 
 
 @pytest.fixture(scope="session", name="session_maker")
-def fixture_db(test_config: Dynaconf) -> sessionmaker[Session]:
+def fixture_db(test_config: Dynaconf):
     """Create a connection to a test db with scope session."""
     # check that the testing configs are correctly set
     assert test_config.database_url == "sqlite:///mock.db"
@@ -45,7 +45,7 @@ def fixture_db(test_config: Dynaconf) -> sessionmaker[Session]:
 
 
 @pytest.fixture(scope="module", name="populate_db", autouse=True)
-def _populate_db(session_maker: sessionmaker[Session]) -> None:
+def _populate_db(session_maker: sessionmaker) -> None:
     """Populate the database with test data."""
     # yield that session after dropping and recreating the tables in the db
     with session_maker() as session:
@@ -54,9 +54,11 @@ def _populate_db(session_maker: sessionmaker[Session]) -> None:
 
 
 @pytest.fixture(name="test_session")
-def fixture_scoped_session(session_maker: sessionmaker[Session]):
+def fixture_scoped_session(session_maker: sessionmaker):
     """Create a scoped session that automatically rolls back after each test."""
     with session_maker() as session:
+        # TODO(widal001): Fix how nested transactions work # noqa: FIX002
+        # https://github.com/cofundable/api/issues/8
         session.begin_nested()
         # Use a context manager to yield the session and roll back any changes
         yield session
