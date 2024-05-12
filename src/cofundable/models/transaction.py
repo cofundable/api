@@ -12,7 +12,7 @@ from sqlalchemy.orm import mapped_column, relationship
 
 from cofundable.models.base import Mapped, UUIDAuditBase
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     from cofundable.models.account import Account
 
 
