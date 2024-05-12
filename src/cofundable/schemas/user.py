@@ -19,6 +19,14 @@ class UserBase(BaseModel):
     bio: str | None = None
 
 
+class UserUpdateSchema(BaseModel):
+    """Schema used to update the User model."""
+
+    name: str | None = None
+    handle: str | None = None
+    bio: str | None = None
+
+
 class UserRequestSchema(UserBase):
     """Request schema for a cause that excludes read-only fields."""
 

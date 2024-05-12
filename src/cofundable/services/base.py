@@ -4,7 +4,6 @@ from typing import Generic, Sequence, Type, TypeVar
 from uuid import UUID, uuid4
 
 import sqlalchemy as sa
-from fastapi.encoders import jsonable_encoder
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
@@ -137,7 +136,7 @@ class CRUDBase(
         db: Session,
         *,
         record: ModelTypeT,
-        update_obj: UpdateSchemaTypeT,
+        update_data: UpdateSchemaTypeT,
     ) -> ModelTypeT:
         """
         Update a record in the table.
@@ -149,25 +148,13 @@ class CRUDBase(
         record: ModelTypeT
             Instance of the SQLAlchemy model that represents the row in the
             corresponding database table that will be updated
-        update_obj: Union[UpdateSchemaTypeT, Dict[str, Any]]
+        update_data: UpdateSchemaTypeT
             Either an instance of a Pydantic schema or a dictionary of values
             used to update the row in the database
 
         """
-        # convert record to dict so we can access its fields
-        current_data = jsonable_encoder(record)
-
-        # get the update data in dict format
-        if isinstance(update_obj, dict):
-            update_data = update_obj
-        else:
-            update_data = update_obj.model_dump(exclude_unset=True)
-
-        # update the record with the update data
-        for field in current_data:
-            if field in update_data:
-                setattr(record, field, update_data[field])
-
+        for field, value in update_data.model_dump(exclude_unset=True).items():
+            setattr(record, field, value)
         return self.commit_changes(db, record)
 
     def delete(self, db: Session, *, row_id: UUID) -> None:

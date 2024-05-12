@@ -7,7 +7,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from cofundable.models.user import User
-from cofundable.schemas.user import UserRequestSchema, UserResponseSchema
+from cofundable.schemas.user import UserRequestSchema, UserUpdateSchema
 from cofundable.services.accounts import (
     Account,
     AccountSchema,
@@ -16,7 +16,7 @@ from cofundable.services.accounts import (
 from cofundable.services.base import CRUDBase
 
 
-class UserCRUD(CRUDBase[User, UserRequestSchema, UserResponseSchema]):
+class UserCRUD(CRUDBase[User, UserRequestSchema, UserUpdateSchema]):
     """Manage CRUD operations for the User model."""
 
     def create(
