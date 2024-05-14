@@ -25,7 +25,7 @@ def fixture_config():
     return config.settings.from_env("testing")
 
 
-@pytest.fixture(scope="session", name="session_maker")
+@pytest.fixture(scope="session", name="session")
 def fixture_db(test_config: Dynaconf):
     """Create a connection to a test db with scope session."""
     # check that the testing configs are correctly set
@@ -37,33 +37,33 @@ def fixture_db(test_config: Dynaconf):
         connect_args={"check_same_thread": False},
     )
     # initiate a db session using that connection
-    return sessionmaker(
+    test_session = sessionmaker(
         autocommit=False,
         autoflush=False,
         bind=engine,
     )
-
-
-@pytest.fixture(scope="module", name="populate_db", autouse=True)
-def _populate_db(session_maker: sessionmaker) -> None:
-    """Populate the database with test data."""
-    # yield that session after dropping and recreating the tables in the db
-    with session_maker() as session:
+    with test_session() as session:
         database.init_test_db(session, testing=True)
         populate_db(session)
+        yield session
 
 
 @pytest.fixture(name="test_session")
-def fixture_scoped_session(session_maker: sessionmaker):
+def fixture_scoped_session(session: Session, monkeypatch: pytest.MonkeyPatch):
     """Create a scoped session that automatically rolls back after each test."""
-    with session_maker() as session:
-        # TODO(widal001): Fix how nested transactions work # noqa: FIX002
-        # https://github.com/cofundable/api/issues/8
-        session.begin_nested()
-        # Use a context manager to yield the session and roll back any changes
-        yield session
-        # Roll back the transaction explicitly
-        session.rollback()
+
+    def flush_instead_of_commit() -> None:
+        """Flush the transaction instead of committing it to allow rollback."""
+        session.flush()
+        session.expire_all()
+
+    # replace commit() with flush() to enable rolling back test-specific changes
+    monkeypatch.setattr(session, "commit", flush_instead_of_commit)
+    # started a nested transaction then yield the session for use in a test
+    session.begin_nested()
+    yield session
+    # roll back the transaction explicitly to undo the changes made in a test
+    session.rollback()
 
 
 @pytest.fixture(name="curr_user")
